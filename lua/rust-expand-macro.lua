@@ -5,7 +5,7 @@ M.setup = function(opts)
 end
 
 local expansion_buf_id = nil
-M.expand_macro = function()
+M.expand_macro = function(open)
     local function iter_lines(s)
         if s:sub(-1) ~= "\n" then s = s .. "\n" end
         return s:gmatch("(.-)\n")
@@ -52,7 +52,11 @@ M.expand_macro = function()
         vim.api.nvim_buf_set_option(expansion_buf_id, 'filetype', 'rust')
 
         -- create new window for macro expansion
-        vim.cmd('vsplit')
+        if open == 'vertical' then
+            vim.cmd('vsplit')
+        else
+            vim.cmd('split')
+        end
         local win = vim.api.nvim_get_current_win()
         vim.api.nvim_win_set_buf(win, expansion_buf_id)
         vim.api.nvim_win_set_cursor(win, { 1, 0 })
