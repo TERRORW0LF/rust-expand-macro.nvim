@@ -26,13 +26,18 @@ M.expand_macro = function()
     end
 
     local function handler(responses)
-        if responses == nil or responses[1] == nil or responses[1].result == nil then
+        if responses == nil then
+            vim.notify('No macro expansion available', vim.log.levels.WARN)
+            return
+        end
+        local _, response = next(responses)
+        if response == nil or response.result == nil then
             vim.notify('No macro expansion available', vim.log.levels.WARN)
             return
         end
 
-        local name = responses[1].result.name
-        local expansion = responses[1].result.expansion
+        local name = response.result.name
+        local expansion = response.result.expansion
 
         -- if there already is an expansion buffer open, delete it first
         if expansion_buf_id ~= nil then
